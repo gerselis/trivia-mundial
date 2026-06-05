@@ -1,0 +1,21 @@
+{
+  "name": "Trivia Mundial 2026",
+  "short_name": "Trivia2026",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a252f",
+  "theme_color": "#0b5394",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "fotos/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "fotos/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

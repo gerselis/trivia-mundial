@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b5394">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('App lista para instalarse', reg))
+        .catch(err => console.log('Error al registrar', err));
+    });
+  }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Mundial 2026 - Modo Selección</title>
+    <style>
+        :root {
+            --arg-blue: #74acdf;
+            --arg-dark-blue: #0b5394;
+            --arg-gold: #f1c232;
+            --arg-gold-dark: #bf9000;
+            --dark: #1a252f;
+            --light: #f4f7f9;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle, #2c3e50 0%, #0f171e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: #ffffff;
+        }
+
+        #game-container {
+            background: rgba(255, 255, 255, 0.96);
+            color: var(--dark);
+            width: 100%;
+            max-width: 750px;
+            min-height: 600px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 4px solid var(--arg-blue);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            flex-grow: 1;
+            text-align: center;
+            animation: slideUp 0.4s ease-out forwards;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { 
+            font-size: 2.3rem; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            margin-bottom: 15px; 
+            background: linear-gradient(45deg, var(--arg-dark-blue), var(--arg-blue)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        h2 { font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; color: var(--arg-dark-blue); }
+        p { font-size: 1.1rem; color: #555; margin-bottom: 25px; line-height: 1.4; }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 3px solid var(--arg-blue);
+            border-radius: 50px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--arg-blue) 0%, var(--arg-dark-blue) 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 6px 15px rgba(116, 172, 223, 0.4);
+            text-transform: uppercase;
+            border-bottom: 4px solid #083a66;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(116, 172, 223, 0.6);
+        }
+
+        #game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: linear-gradient(to bottom, #e1effa, #ffffff);
+            border-bottom: 2px solid var(--arg-blue);
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--arg-dark-blue);
+            width: 100%;
+        }
+
+        .progress-bar-container {
+            width: 45%;
+            height: 12px;
+            background-color: #cbd5e1;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #94a3b8;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, var(--arg-blue), var(--arg-dark-blue));
+            transition: width 0.3s ease;
+        }
+
+        .sticker-container {
+            width: 200px;
+            height: 250px;
+            background: #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 5px solid var(--arg-gold);
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .player-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .flag-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+            z-index: 10;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 2.5px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: var(--dark);
+            text-align: center;
+            outline: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .option-btn:hover {
+            background-color: #f1f5f9;
+            border-color: var(--arg-blue);
+            transform: translateX(2px);
+        }
+
+        #feedback-box {
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .correct-anim { background-color: #e8f8f0; color: var(--success); border: 2px solid var(--success); }
+        .wrong-anim { background-color: #fdeaea; color: var(--danger); border: 2px solid var(--danger); }
+
+        .cup-diploma {
+            border: 8px double var(--arg-gold);
+            background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 550px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .cup-title { font-size: 2rem; font-weight: 900; color: var(--arg-dark-blue); letter-spacing: 1px; }
+        .cup-name { font-size: 1.8rem; font-weight: bold; color: var(--arg-gold-dark); margin: 15px 0; text-decoration: underline; }
+
+        @media (max-width: 500px) {
+            h1 { font-size: 1.8rem; }
+            .sticker-container { width: 160px; height: 210px; }
+            .option-btn { padding: 11px 15px; font-size: 1rem; }
+            #game-header { padding: 10px 15px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+
+    <!-- PANTALLA 1: BIENVENIDA -->
+    <div id="screen-welcome" class="screen active">
+        <div style="font-size: 4rem; margin-bottom: 10px;">☀️⚽🇦🇷</div>
+        <h1>Trivia Mundial 2026</h1>
+        <p>¿Sos un verdadero estratega del fútbol? Identificá a los cracks que jugarán el Mundial. ¡Atención: los impostores son del mismo país!</p>
+        <input type="text" id="player-name" placeholder="Tu Nombre de DT..." maxlength="12">
+        <button class="btn" onclick="startGame()">Iniciar Desafío (20 Preguntas)</button>
+    </div>
+
+    <!-- CABECERA DE LA PARTIDA -->
+    <div id="game-header" style="display: none;">
+        <div id="header-round">Pregunta: 1/20</div>
+        <div class="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="header-score">Aciertos: 0</div>
+    </div>
+
+    <!-- PANTALLA 2: PREGUNTA -->
+    <div id="screen-question" class="screen">
+        <h2>¿Quién es este jugador?</h2>
+        
+        <div class="sticker-container">
+            <span class="flag-badge" id="player-flag">🇦🇷</span>
+            <img src="" alt="Fútbol" class="player-img" id="player-image" onerror="this.src='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=300&auto=format&fit=crop&q=80';">
+        </div>
+
+        <div class="options-list">
+            <button class="option-btn" id="opt0" onclick="checkAnswer(0)">Opción 1</button>
+            <button class="option-btn" id="opt1" onclick="checkAnswer(1)">Opción 2</button>
+            <button class="option-btn" id="opt2" onclick="checkAnswer(2)">Opción 3</button>
+        </div>
+
+        <div id="feedback-box"></div>
+        <button class="btn" id="btn-next" onclick="nextQuestion()" style="display: none; padding: 10px 25px; font-size: 1rem;">Siguiente Crack ➡️</button>
+    </div>
+
+    <!-- PANTALLA 3: FIN / RECONOCIMIENTO -->
+    <div id="screen-end" class="screen">
+        <div style="font-size: 4.5rem; margin-bottom: 5px;">🏆⭐🥇</div>
+        <div class="cup-diploma">
+            <div class="cup-title">CAMPEÓN DE TRIVIA</div>
+            <p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin: 5px 0;">Otorgado al Director Técnico:</p>
+            <div class="cup-name" id="output-name">Nombre DT</div>
+            <p id="output-score" style="font-weight: bold; font-size: 1.2rem; color: var(--dark); margin: 0;"></p>
+        </div>
+        <button class="btn" onclick="resetGame()">Volver a Jugar 🔄</button>
+    </div>
+
+</div>
+
+<script>
+    // BASE DE DATOS AMPLIADA CON NUEVOS CRACKS INTERNACIONALES
+    const PLAYERS_DATABASE = [
+        // ARGENTINA
+        { name: "Lionel Messi", country: "Argentina", flag: "🇦🇷", img: "fotos/messi.jpg", pool: ["Ángel Di María", "Lautaro Martínez", "Julián Álvarez", "Rodrigo De Paul", "Enzo Fernández", "Alexis Mac Allister"] },
+        { name: "Lautaro Martínez", country: "Argentina", flag: "🇦🇷", img: "fotos/lautaro.jpg", pool: ["Lionel Messi", "Julián Álvarez", "Rodrigo De Paul", "Paulo Dybala", "Enzo Fernández", "Leandro Paredes"] },
+        { name: "Julián Álvarez", country: "Argentina", flag: "🇦🇷", img: "fotos/julian.jpg", pool: ["Lionel Messi", "Lautaro Martínez", "Ángel Correa", "Alejacho Garnacho", "Alexis Mac Allister"] },
+        { name: "Emiliano Martínez", country: "Argentina", flag: "🇦🇷", img: "fotos/dibu.jpg", pool: ["Franco Armani", "Gerónimo Rulli", "Walter Benítez", "Lisandro Martínez", "Cristian Romero"] },
+        { name: "Enzo Fernández", country: "Argentina", flag: "🇦🇷", img: "fotos/enzo.jpg", pool: ["Rodrigo De Paul", "Leandro Paredes", "Alexis Mac Allister", "Exequiel Palacios", "Guido Rodríguez"] },
+        { name: "Alexis Mac Allister", country: "Argentina", flag: "🇦🇷", img: "fotos/macallister.jpg", pool: ["Enzo Fernández", "Rodrigo De Paul", "Giovani Lo Celso", "Thiago Almada", "Facundo Buonanotte"] },
+        
+        // BRASIL
+        { name: "Vinícius Júnior", country: "Brasil", flag: "🇧🇷", img: "fotos/vinicius.jpg", pool: ["Neymar Jr", "Rodrygo Goes", "Raphinha", "Gabriel Martinelli", "Richarlison", "Endrick"] },
+        { name: "Rodrygo Goes", country: "Brasil", flag: "🇧🇷", img: "fotos/rodrygo.jpg", pool: ["Vinícius Júnior", "Neymar Jr", "Antony", "Gabriel Jesus", "Lucas Paquetá"] },
+        { name: "Neymar Jr", country: "Brasil", flag: "🇧🇷", img: "fotos/neymar.jpg", pool: ["Vinícius Júnior", "Rodrygo Goes", "Raphinha", "Richarlison", "Bruno Guimarães"] },
+
+        // FRANCIA
+        { name: "Kylian Mbappé", country: "Francia", flag: "🇫🇷", img: "fotos/mbappe.jpg", pool: ["Antoine Griezmann", "Olivier Giroud", "Ousmane Dembélé", "Marcus Thuram", "Kingsley Coman"] },
+        { name: "Antoine Griezmann", country: "Francia", flag: "🇫🇷", img: "fotos/griezmann.jpg", pool: ["Kylian Mbappé", "Ousmane Dembélé", "Aurélien Tchouaméni", "Eduardo Camavinga", "Adrien Rabiot"] },
+        
+        // ESPAÑA (NUEVOS)
+        { name: "Lamine Yamal", country: "España", flag: "🇪🇸", img: "fotos/yamal.jpg", pool: ["Nico Williams", "Pedri González", "Gavi", "Álvaro Morata", "Dani Olmo"] },
+        { name: "Pedri González", country: "España", flag: "🇪🇸", img: "fotos/pedri.jpg", pool: ["Gavi", "Lamine Yamal", "Rodri Hernández", "Dani Olmo", "Fabián Ruiz"] },
+        { name: "Rodri Hernández", country: "España", flag: "🇪🇸", img: "fotos/rodri.jpg", pool: ["Pedri González", "Gavi", "Dani Carvajal", "Aymeric Laporte", "Mikel Merino"] },
+
+        // INGLATERRA (NUEVOS)
+        { name: "Jude Bellingham", country: "Inglaterra", flag: "🇬🇧", img: "fotos/bellingham.jpg", pool: ["Harry Kane", "Bukayo Saka", "Phil Foden", "Declan Rice", "Cole Palmer"] },
+        { name: "Harry Kane", country: "Inglaterra", flag: "🇬🇧", img: "fotos/kane.jpg", pool: ["Jude Bellingham", "Bukayo Saka", "Phil Foden", "Marcus Rashford", "Jack Grealish"] },
+        { name: "Bukayo Saka", country: "Inglaterra", flag: "🇬🇧", img: "fotos/saka.jpg", pool: ["Harry Kane", "Jude Bellingham", "Phil Foden", "Cole Palmer", "Kieran Trippier"] },
+
+        // ALEMANIA (NUEVOS)
+        { name: "Jamal Musiala", country: "Alemania", flag: "🇩🇪", img: "fotos/musiala.jpg", pool: ["Florian Wirtz", "Kai Havertz", "Thomas Müller", "Leroy Sané", "Joshua Kimmich"] },
+        { name: "Florian Wirtz", country: "Alemania", flag: "🇩🇪", img: "fotos/wirtz.jpg", pool: ["Jamal Musiala", "Kai Havertz", "Leroy Sané", "Niclas Füllkrug", "Serge Gnabry"] },
+
+        // NORUEGA / BÉLGICA / CROACIA (NUEVOS)
+        { name: "Erling Haaland", country: "Noruega", flag: "🇳🇴", img: "fotos/haaland.jpg", pool: ["Martin Ødegaard", "Alexander Sørloth", "Oscar Bobb", "Sander Berge", "Antonio Nusa"] },
+        { name: "Kevin De Bruyne", country: "Bélgica", flag: "🇧🇪", img: "fotos/debruyne.jpg", pool: ["Romelu Lukaku", "Jérémy Doku", "Leandro Trossard", "Youri Tielemans", "Amadou Onana"] },
+        { name: "Luka Modrić", country: "Croacia", flag: "🇭🇷", img: "fotos/modric.jpg", pool: ["Mateo Kovačić", "Ivan Perišić", "Marcelo Brozović", "Joško Gvardiol", "Borna Sosa"] }
+    ];
+
+    let currentDeck = [];
+    let roundIndex = 0;
+    let scoreCount = 0;
+    let correctAnswerPos = 0;
+    let trainerName = "";
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, type, duration) {
+        try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {}
+    }
+
+    // Sonidos optimizados por Web Audio API
+    function soundGol() { playTone(523.25, 'sine', 0.1); setTimeout(() => playTone(783.99, 'sine', 0.2), 70); }
+    function soundFail() { playTone(140, 'sawtooth', 0.35); }
+
+    function startGame() {
+        const nameVal = document.getElementById("player-name").value.trim();
+        trainerName = nameVal !== "" ? nameVal : "Director Técnico";
+
+        // Mezclamos toda la base de datos y elegimos 20 al azar para la tanda
+        let shuffled = [...PLAYERS_DATABASE].sort(() => Math.random() - 0.5);
+        currentDeck = shuffled.slice(0, Math.min(20, shuffled.length));
+
+        roundIndex = 0;
+        scoreCount = 0;
+
+        document.getElementById("screen-welcome").classList.remove("active");
+        document.getElementById("game-header").style.display = "flex";
+        document.getElementById("screen-question").classList.add("active");
+
+        renderRound();
+    }
+
+    function renderRound() {
+        document.getElementById("feedback-box").style.display = "none";
+        document.getElementById("btn-next").style.display = "none";
+        
+        for(let i=0; i<3; i++) {
+            let btn = document.getElementById(`opt${i}`);
+            btn.style.backgroundColor = "#ffffff";
+            btn.style.borderColor = "#cbd5e1";
+            btn.style.pointerEvents = "auto";
+        }
+
+        document.getElementById("header-round").innerText = `Pregunta: ${roundIndex + 1}/${currentDeck.length}`;
+        document.getElementById("header-score").innerText = `Aciertos: ${scoreCount}`;
+        document.getElementById("progress-bar").style.width = `${(roundIndex / currentDeck.length) * 100}%`;
+
+        let currentData = currentDeck[roundIndex];
+        document.getElementById("player-image").src = currentData.img;
+        document.getElementById("player-flag").innerText = currentData.flag;
+
+        let optionsPool = [...currentData.pool].sort(() => Math.random() - 0.5);
+        let fake1 = optionsPool[0];
+        let fake2 = optionsPool[1];
+
+        correctAnswerPos = Math.floor(Math.random() * 3);
+        let finalOptions = [];
+
+        if (correctAnswerPos === 0) finalOptions = [currentData.name, fake1, fake2];
+        else if (correctAnswerPos === 1) finalOptions = [fake1, currentData.name, fake2];
+        else finalOptions = [fake1, fake2, currentData.name];
+
+        for(let i=0; i<3; i++) {
+            document.getElementById(`opt${i}`).innerText = finalOptions[i];
+        }
+    }
+
+    function checkAnswer(idx) {
+        for(let i=0; i<3; i++) {
+            document.getElementById(`opt${i}`).style.pointerEvents = "none";
+        }
+
+        let feedback = document.getElementById("feedback-box");
+        let player = currentDeck[roundIndex];
+
+        if (idx === correctAnswerPos) {
+            scoreCount++;
+            soundGol();
+            document.getElementById(`opt${idx}`).style.backgroundColor = "#d4edda";
+            document.getElementById(`opt${idx}`).style.borderColor = "var(--success)";
+            feedback.className = "correct-anim";
+            feedback.innerText = `¡GOLAZO! ⚽ Es ${player.name} de ${player.country}.`;
+        } else {
+            soundFail();
+            document.getElementById(`opt${idx}`).style.backgroundColor = "#f8d7da";
+            document.getElementById(`opt${idx}`).style.borderColor = "var(--danger)";
+            document.getElementById(`opt${correctAnswerPos}`).style.backgroundColor = "#d4edda";
+            document.getElementById(`opt${correctAnswerPos}`).style.borderColor = "var(--success)";
+            feedback.className = "wrong-anim";
+            feedback.innerText = `¡OFFSIDE! 🚩 Era ${player.name} (${player.country}).`;
+        }
+
+        document.getElementById("header-score").innerText = `Aciertos: ${scoreCount}`;
+        feedback.style.display = "block";
+        document.getElementById("btn-next").style.display = "block";
+    }
+
+    function nextQuestion() {
+        roundIndex++;
+        if (roundIndex < currentDeck.length) {
+            renderRound();
+        } else {
+            endGame();
+        }
+    }
+
+    function endGame() {
+        document.getElementById("screen-question").classList.remove("active");
+        document.getElementById("game-header").style.display = "none";
+        document.getElementById("screen-end").classList.add("active");
+        document.getElementById("output-name").innerText = trainerName;
+
+        let resText = "¡Terminaste el juego! Conseguiste " + scoreCount + " de " + currentDeck.length + " aciertos.";
+        document.getElementById("output-score").innerText = resText;
+    }
+
+    function resetGame() {
+        document.getElementById("screen-end").classList.remove("active");
+        document.getElementById("screen-welcome").classList.add("active");
+        document.getElementById("player-name").value = "";
+    }
+</script>
+
+</body>
+</html>
