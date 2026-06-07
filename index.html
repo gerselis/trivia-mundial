@@ -310,13 +310,13 @@
 </div>
 
 <script>
-    // BASE DE DATOS AMPLIADA CON NUEVOS CRACKS INTERNACIONALES
+    // BASE DE DATOS REVISADA Y ARREGLADA (Sin duplicados internos)
     const PLAYERS_DATABASE = [
         // ==========================================
-        // SELECCIÓN ARGENTINA (Plantel Completo / Convocados)
+        // SELECCIÓN ARGENTINA
         // ==========================================
         { name: "Lionel Messi", country: "Argentina", flag: "🇦🇷", img: "fotos/messi.jpg", pool: ["Ángel Di María", "Lautaro Martínez", "Julián Álvarez", "Rodrigo De Paul", "Enzo Fernández", "Alexis Mac Allister"] },
-        { name: "Lautaro Martínez", country: "Argentina", flag: "🇦🇷", img: "fotos/lautaro.jpg", pool: ["Lionel Messi", "Julián Álvarez", "Rodrigo De Paul", "Paulo Dybala", "Enzo Fernández", "Leandro Paredes"] },
+        { name: "Lautaro Martínez", country: "Argentina", flag: "🇦🇷", img: "fotos/lautaro.jpg", pool: ["Lionel Messi", "Julián Álvarez", "Rodrigo De Paul", "Paulo Dybala", "Enzo Fernández", "Ángel Correa"] },
         { name: "Julián Álvarez", country: "Argentina", flag: "🇦🇷", img: "fotos/julian.jpg", pool: ["Lionel Messi", "Lautaro Martínez", "Ángel Correa", "Alejandro Garnacho", "Alexis Mac Allister"] },
         { name: "Emiliano Martínez", country: "Argentina", flag: "🇦🇷", img: "fotos/dibu.jpg", pool: ["Franco Armani", "Gerónimo Rulli", "Walter Benítez", "Lisandro Martínez", "Cristian Romero"] },
         { name: "Enzo Fernández", country: "Argentina", flag: "🇦🇷", img: "fotos/enzo.jpg", pool: ["Rodrigo De Paul", "Leandro Paredes", "Alexis Mac Allister", "Exequiel Palacios", "Guido Rodríguez"] },
@@ -337,41 +337,41 @@
         { name: "Nicolás González", country: "Argentina", flag: "🇦🇷", img: "fotos/nicogonzalez.jpg", pool: ["Alejandro Garnacho", "Julián Álvarez", "Ángel Correa", "Paulo Dybala", "Lucas Ocampos"] },
         { name: "Exequiel Palacios", country: "Argentina", flag: "🇦🇷", img: "fotos/palacios.jpg", pool: ["Enzo Fernández", "Guido Rodríguez", "Leandro Paredes", "Giovani Lo Celso", "Thiago Almada"] },
         { name: "Guido Rodríguez", country: "Argentina", flag: "🇦🇷", img: "fotos/guido.jpg", pool: ["Leandro Paredes", "Enzo Fernández", "Exequiel Palacios", "Rodrigo De Paul", "Alan Varela"] },
-        { name: "Franco Armani", country: "Argentina", flag: "🇦🇷", img: "fotos/armani.jpg", pool: ["Emiliano Martínez", "Franco Armani", "Walter Benítez", "Juan Musso", "Nicolás Otamendi"] },
+        { name: "Franco Armani", country: "Argentina", flag: "🇦🇷", img: "fotos/armani.jpg", pool: ["Emiliano Martínez", "Gerónimo Rulli", "Walter Benítez", "Juan Musso", "Nicolás Otamendi"] },
         { name: "Gerónimo Rulli", country: "Argentina", flag: "🇦🇷", img: "fotos/rulli.jpg", pool: ["Emiliano Martínez", "Franco Armani", "Walter Benítez", "Juan Musso", "German Pezzella"] },
         { name: "German Pezzella", country: "Argentina", flag: "🇦🇷", img: "fotos/pezzella.jpg", pool: ["Cristian Romero", "Nicolás Otamendi", "Lisandro Martínez", "Lucas Martínez Quarta", "Leonardo Balerdi"] },
         { name: "Ángel Correa", country: "Argentina", flag: "🇦🇷", img: "fotos/angelcorrea.jpg", pool: ["Julián Álvarez", "Lautaro Martínez", "Paulo Dybala", "Alejandro Garnacho", "Thiago Almada"] },
 
         // ==========================================
-        // BRASIL (Top 3 Claves)
+        // BRASIL
         // ==========================================
         { name: "Vinícius Júnior", country: "Brasil", flag: "🇧🇷", img: "fotos/vinicius.jpg", pool: ["Neymar Jr", "Rodrygo Goes", "Raphinha", "Endrick", "Lucas Paquetá"] },
         { name: "Rodrygo Goes", country: "Brasil", flag: "🇧🇷", img: "fotos/rodrygo.jpg", pool: ["Vinícius Júnior", "Neymar Jr", "Raphinha", "Endrick", "Gabriel Jesus"] },
         { name: "Neymar Jr", country: "Brasil", flag: "🇧🇷", img: "fotos/neymar.jpg", pool: ["Vinícius Júnior", "Rodrygo Goes", "Raphinha", "Richarlison", "Casemiro"] },
 
         // ==========================================
-        // FRANCIA (Top 3 Claves)
+        // FRANCIA
         // ==========================================
         { name: "Kylian Mbappé", country: "Francia", flag: "🇫🇷", img: "fotos/mbappe.jpg", pool: ["Antoine Griezmann", "Ousmane Dembélé", "Olivier Giroud", "Marcus Thuram", "Kingsley Coman"] },
         { name: "Antoine Griezmann", country: "Francia", flag: "🇫🇷", img: "fotos/griezmann.jpg", pool: ["Kylian Mbappé", "Ousmane Dembélé", "Aurélien Tchouaméni", "Eduardo Camavinga", "Adrien Rabiot"] },
         { name: "Ousmane Dembélé", country: "Francia", flag: "🇫🇷", img: "fotos/dembele.jpg", pool: ["Kylian Mbappé", "Antoine Griezmann", "Kingsley Coman", "Marcus Thuram", "Bradley Barcola"] },
         
         // ==========================================
-        // ESPAÑA (Top 3 Claves)
+        // ESPAÑA
         // ==========================================
         { name: "Lamine Yamal", country: "España", flag: "🇪🇸", img: "fotos/yamal.jpg", pool: ["Nico Williams", "Pedri González", "Gavi", "Álvaro Morata", "Dani Olmo"] },
         { name: "Pedri González", country: "España", flag: "🇪🇸", img: "fotos/pedri.jpg", pool: ["Gavi", "Lamine Yamal", "Rodri Hernández", "Dani Olmo", "Fabián Ruiz"] },
         { name: "Rodri Hernández", country: "España", flag: "🇪🇸", img: "fotos/rodri.jpg", pool: ["Pedri González", "Gavi", "Dani Carvajal", "Aymeric Laporte", "Martín Zubimendi"] },
 
         // ==========================================
-        // INGLATERRA (Top 3 Claves)
+        // INGLATERRA
         // ==========================================
         { name: "Jude Bellingham", country: "Inglaterra", flag: "🇬🇧", img: "fotos/bellingham.jpg", pool: ["Harry Kane", "Bukayo Saka", "Phil Foden", "Declan Rice", "Cole Palmer"] },
         { name: "Harry Kane", country: "Inglaterra", flag: "🇬🇧", img: "fotos/kane.jpg", pool: ["Jude Bellingham", "Bukayo Saka", "Phil Foden", "Ollie Watkins", "Marcus Rashford"] },
         { name: "Phil Foden", country: "Inglaterra", flag: "🇬🇧", img: "fotos/foden.jpg", pool: ["Jude Bellingham", "Harry Kane", "Bukayo Saka", "Cole Palmer", "Jack Grealish"] },
 
         // ==========================================
-        // ALEMANIA (Top 3 Claves)
+        // ALEMANIA
         // ==========================================
         { name: "Jamal Musiala", country: "Alemania", flag: "🇩🇪", img: "fotos/musiala.jpg", pool: ["Florian Wirtz", "Kai Havertz", "Thomas Müller", "Leroy Sané", "Joshua Kimmich"] },
         { name: "Florian Wirtz", country: "Alemania", flag: "🇩🇪", img: "fotos/wirtz.jpg", pool: ["Jamal Musiala", "Kai Havertz", "Leroy Sané", "Niclas Füllkrug", "Ilkay Gündogan"] },
@@ -439,7 +439,9 @@
         document.getElementById("player-image").src = currentData.img;
         document.getElementById("player-flag").innerText = currentData.flag;
 
-        let optionsPool = [...currentData.pool].sort(() => Math.random() - 0.5);
+        // FILTRO DE SEGURIDAD EXTRALIMPIO: Remueve al jugador real de las opciones falsas por si acaso
+        let filteredPool = currentData.pool.filter(name => name !== currentData.name);
+        let optionsPool = [...filteredPool].sort(() => Math.random() - 0.5);
         let fake1 = optionsPool[0];
         let fake2 = optionsPool[1];
 
